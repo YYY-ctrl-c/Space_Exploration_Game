@@ -15,6 +15,7 @@
         <router-link to="/shop">星际商店</router-link>
         <router-link to="/inventory">我的货舱</router-link>
         <router-link to="/gacha">补给舱</router-link>
+        <router-link to="/codex">招募图鉴</router-link>
       </div>
 
       <div class="auth-action">

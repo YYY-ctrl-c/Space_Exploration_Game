@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <div class="hero">
-      <h1>欢迎回来，指挥官 {{ commanderName }}</h1>
+      <h1>欢迎回来，指挥官 ： {{ commanderName }}</h1>
       <p>状态：当前指挥中心运作正常</p>
     </div>
 
@@ -10,6 +10,8 @@
       <div class="nav-card" @click="$router.push('/explore')">星域探索</div>
       <div class="nav-card" @click="$router.push('/shop')">星际商店</div>
       <div class="nav-card" @click="$router.push('/inventory')">我的货舱</div>
+      <div class="nav-card" @click="$router.push('/gacha')">补给舱</div>
+      <div class="nav-card" @click="$router.push('/codex')">招募图鉴</div>
     </div>
   </div>
 </template>

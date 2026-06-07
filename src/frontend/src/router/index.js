@@ -8,6 +8,7 @@ import ExploreView from '../views/ExploreView.vue';
 import GachaView from '../views/GachaView.vue';
 import ShopView from '../views/ShopView.vue';
 import InventoryView from '../views/InventoryView.vue';
+import CrewCodexView from '../views/CrewCodexView.vue';
 
 const routes = [
     { path: '/', redirect: '/login' },
@@ -17,7 +18,8 @@ const routes = [
     { path: '/explore', component: ExploreView },
     { path: '/gacha', component: GachaView },
     { path: '/shop', component: ShopView },
-    { path: '/inventory', component: InventoryView }
+    { path: '/inventory', component: InventoryView },
+    { path: '/codex', component: CrewCodexView}
 ];
 
 const router = createRouter({
