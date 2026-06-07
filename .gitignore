@@ -12,10 +12,16 @@ build/
 *.war
 
 # --- IntelliJ IDEA ---
-.idea/
-*.iws
-*.iml
-*.ipr
+# 忽略所有 IDEA 生成的配置文件
+.idea/*
+# 排除掉存放 Run Configuration 的文件夹（允许 Git 追踪这些共享配置）
+!.idea/runConfigurations/
+# 排除掉项目构建相关的 xml (如果以后需要共享项目结构)
+!.idea/modules.xml
+!.idea/libraries/
+
+# 再次明确忽略掉 workspace.xml（这是个人本地状态，绝对不能提交！）
+.idea/workspace.xml
 
 # --- Eclipse ---
 .apt_generated
