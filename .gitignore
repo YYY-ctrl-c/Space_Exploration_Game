@@ -1,0 +1,52 @@
+# --- Java/Maven/Gradle ---
+target/
+build/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+.kotlin
+*.class
+*.jar
+*.war
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# --- Eclipse ---
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# --- NetBeans ---
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# --- VS Code ---
+.vscode/
+
+# --- Mac OS ---
+.DS_Store
+
+
+# 依赖文件夹
+node_modules/
+# 前端构建产物 (一般不需要传)
+dist/
+dist-ssr/
+
+# 环境配置文件 (如果以后用到 .env，切记不要传包含真实密钥的 .env 文件)
+.env*.local
+*.log
+*.tmp
