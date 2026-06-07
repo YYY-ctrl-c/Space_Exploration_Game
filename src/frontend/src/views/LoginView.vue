@@ -11,19 +11,23 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import request from '../api/request';
+import { useUser } from '../status/useUser'; // 1. 引入你的状态管理
 
 const router = useRouter();
+const { setUser } = useUser(); // 2. 获取 setUser 方法
 const form = ref({ account: '', pass: '' });
 
 const handleLogin = async () => {
-  // 注意：这里调用后端 /auth/login
   const res = await request.post('/auth/login', null, {
     params: { account: form.value.account, pass: form.value.pass }
   });
 
   if (res.code === 0) {
-    localStorage.setItem('user', JSON.stringify(res.data));
-    router.push('/home');
+    // 【关键修改】不要只写 sessionStorage，要调用 setUser
+    // setUser 会自动帮你存 sessionStorage 并更新全局的 user 变量
+    setUser(res.data);
+
+    router.push('/home'); // 登录成功后跳转
   } else {
     alert(res.msg);
   }

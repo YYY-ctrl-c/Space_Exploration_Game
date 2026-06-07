@@ -78,9 +78,20 @@ public class GachaServlet extends HttpServlet {
                 logPs.setString(4, rewardName);
                 logPs.executeUpdate();
 
-                conn.commit(); // 提交事务
+                // === 查询最新金币 ===
+                PreparedStatement coinsPs = conn.prepareStatement("SELECT coins FROM users WHERE id = ?");
+                coinsPs.setInt(1, userId);
+                ResultSet coinsRs = coinsPs.executeQuery();
+                int newCoins = coinsRs.next() ? coinsRs.getInt("coins") : 0;
+
+                // === 准备返回数据 ===
+                conn.commit();
                 res.addProperty("code", 0);
                 res.addProperty("msg", "获得奖励: " + rewardName);
+
+                JsonObject data = new JsonObject();
+                data.addProperty("newCoins", newCoins);
+                res.add("data", data); // 将新金币放入 data 中
             }
         } catch (Exception e) {
             e.printStackTrace();

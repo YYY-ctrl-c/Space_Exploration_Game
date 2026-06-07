@@ -65,8 +65,23 @@ public class ShopServlet extends HttpServlet {
                     psBag.setInt(2, itemId);
                     psBag.executeUpdate();
 
+                    // === 【新增】查询最新金币 ===
+                    PreparedStatement psCoins = conn.prepareStatement("SELECT coins FROM users WHERE id = ?");
+                    psCoins.setInt(1, userId);
+                    ResultSet rsCoins = psCoins.executeQuery();
+                    int newCoins = rsCoins.next() ? rsCoins.getInt("coins") : 0;
+
+                    // === 【修改】构建 JSON 返回 ===
+                    JsonObject responseJson = new JsonObject();
+                    responseJson.addProperty("code", 0);
+                    responseJson.addProperty("msg", "购买成功");
+
+                    JsonObject data = new JsonObject();
+                    data.addProperty("newCoins", newCoins);
+                    responseJson.add("data", data);
+
+                    response.getWriter().write(responseJson.toString());
                     conn.commit();
-                    response.getWriter().write("{\"code\": 0, \"msg\": \"购买成功\"}");
                 } else {
                     response.getWriter().write("{\"code\": 1, \"msg\": \"星币余额不足\"}");
                 }

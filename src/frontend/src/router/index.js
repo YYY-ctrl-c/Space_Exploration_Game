@@ -25,4 +25,22 @@ const router = createRouter({
     routes
 });
 
+// 添加路由守卫
+router.beforeEach((to, from, next) => {
+    // 检查是否存在 user
+    const user = sessionStorage.getItem('user');
+
+    // 加个打印，看看是否触发
+    console.log('当前访问路径:', to.path);
+    console.log('当前登录用户:', user);
+
+    // 如果前往的不是登录页，且没有登录状态
+    if (to.path !== '/login' && !user) {
+        alert('您尚未登录，请先登录！');
+        next('/login');
+    } else {
+        next();
+    }
+});
+
 export default router;

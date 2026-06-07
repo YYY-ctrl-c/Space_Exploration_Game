@@ -17,29 +17,37 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import request from '../api/request';
+import { useUser } from '../status/useUser';
 
-const items = ref([]);
+const { user, updateCoins } = useUser();
+const items = ref([]); // 这个数组用来存数据
 
-// 加载商店列表
+// 【修改处】补全获取数据的逻辑
 const fetchItems = async () => {
-  const res = await request.get('/shop');
-  items.value = res;
+  try {
+    const res = await request.get('/shop'); // 发送 GET 请求
+    // 假设后端直接返回了商品数组
+    items.value = res;
+  } catch (error) {
+    console.error("加载商店列表失败:", error);
+  }
 };
 
-// 购买物品
 const buyItem = async (itemId) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (!user) {
+  if (!user.value) {
     alert('请先登录！');
     return;
   }
 
   const res = await request.post('/shop', null, {
-    params: { userId: user.id, itemId: itemId }
+    params: { userId: user.value.id, itemId: itemId }
   });
 
   if (res.code === 0) {
     alert('购买成功！');
+    if (res.data && res.data.newCoins !== undefined) {
+      updateCoins(res.data.newCoins); // 更新全局状态
+    }
   } else {
     alert('购买失败: ' + res.msg);
   }

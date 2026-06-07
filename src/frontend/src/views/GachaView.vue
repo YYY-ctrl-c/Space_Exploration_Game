@@ -26,25 +26,29 @@
 <script setup>
 import { ref } from 'vue';
 import request from '../api/request';
+import { useUser } from '../status/useUser';
 
+const { user, updateCoins } = useUser();
 const resultMsg = ref('');
 
 const handleGacha = async (type) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (!user) {
+  if (!user.value) {
     alert('请先登录！');
     return;
   }
 
-  // 调用后端 /gacha 接口
   const res = await request.post('/gacha', null, {
-    params: { userId: user.id, type: type }
+    params: { userId: user.value.id, type: type }
   });
 
   if (res.code === 0) {
     resultMsg.value = res.msg;
+    // 【关键】后端返回最新的金币余额并更新
+    if (res.data && res.data.newCoins !== undefined) {
+      updateCoins(res.data.newCoins);
+    }
   } else {
-    alert(res.msg); // 显示余额不足或系统错误
+    alert(res.msg);
   }
 };
 </script>

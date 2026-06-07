@@ -28,6 +28,7 @@ public class AuthServlet extends HttpServlet {
                     JsonObject user = new JsonObject();
                     user.addProperty("id", rs.getInt("id"));
                     user.addProperty("name", rs.getString("name"));
+                    user.addProperty("coins", rs.getInt("coins"));
                     sendResponse(response, 0, "登录成功", user);
                 } else {
                     sendResponse(response, 1, "账号或密码错误", null);
