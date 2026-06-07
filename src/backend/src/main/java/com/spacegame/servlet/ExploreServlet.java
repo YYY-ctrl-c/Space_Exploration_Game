@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import java.util.Random;
 
 @WebServlet("/explore")
 public class ExploreServlet extends HttpServlet {
@@ -14,54 +15,78 @@ public class ExploreServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, java.io.IOException {
         response.setContentType("application/json;charset=UTF-8");
         JsonObject res = new JsonObject();
+        Random rand = new Random();
 
-        // 获取参数：玩家ID，舰员服役ID，星域ID
         int userId = Integer.parseInt(request.getParameter("userId"));
         int crewId = Integer.parseInt(request.getParameter("crewId"));
         int locId = Integer.parseInt(request.getParameter("locId"));
 
         try (Connection conn = DB.getConnection()) {
-            // 1. 获取舰员当前疲劳值和上限
-            String sql = "SELECT fatigue, fatigue_max FROM user_crew WHERE id = ? AND user_id = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, crewId);
-            ps.setInt(2, userId);
-            ResultSet rs = ps.executeQuery();
+            conn.setAutoCommit(false); // 开启事务
 
-            if (rs.next()) {
-                int currentFatigue = rs.getInt("fatigue");
-                int maxFatigue = rs.getInt("fatigue_max");
+            // 1. 验证疲劳
+            PreparedStatement psCheck = conn.prepareStatement("SELECT fatigue, fatigue_max FROM user_crew WHERE id = ? AND user_id = ? FOR UPDATE");
+            psCheck.setInt(1, crewId);
+            psCheck.setInt(2, userId);
+            ResultSet rs = psCheck.executeQuery();
 
-                // 2. 计算本次消耗 (核心逻辑)
-                int cost = 0;
+            if (!rs.next()) {
+                res.addProperty("code", 1); res.addProperty("msg", "舰员未找到");
+                response.getWriter().write(res.toString()); return;
+            }
+
+            int cost = (locId == 1) ? 10 : (locId == 2) ? 20 : 35;
+            if (rs.getInt("fatigue") + cost > rs.getInt("fatigue_max")) {
+                res.addProperty("code", 1); res.addProperty("msg", "疲劳值过高！");
+            } else {
+                // 2. 确定奖励范围
+                int minItemId, maxItemId, minCoin, maxCoin;
                 switch (locId) {
-                    case 1: cost = 10; break; // 太阳系前哨站
-                    case 2: cost = 20; break; // 天狼星资源带
-                    case 3: cost = 35; break; // 猎户座遗迹星域
+                    case 1: minItemId = 1; maxItemId = 5; minCoin = 50; maxCoin = 100; break;
+                    case 2: minItemId = 6; maxItemId = 10; minCoin = 150; maxCoin = 300; break;
+                    default: minItemId = 11; maxItemId = 15; minCoin = 500; maxCoin = 1000; break;
                 }
 
-                // 3. 疲劳状态判断
-                if (currentFatigue + cost > maxFatigue) {
-                    res.addProperty("code", 1);
-                    res.addProperty("msg", "舰员疲劳值过高，请先补充能量！");
-                } else {
-                    // 更新疲劳
-                    String updateSql = "UPDATE user_crew SET fatigue = fatigue + ? WHERE id = ?";
-                    PreparedStatement updatePs = conn.prepareStatement(updateSql);
-                    updatePs.setInt(1, cost);
-                    updatePs.setInt(2, crewId);
-                    updatePs.executeUpdate();
+                int rewardItemId = rand.nextInt(maxItemId - minItemId + 1) + minItemId;
+                int rewardCoin = rand.nextInt(maxCoin - minCoin + 1) + minCoin;
 
-                    // 4. 返回探索结果
-                    res.addProperty("code", 0);
-                    res.addProperty("msg", "探索任务完成，获得资源！");
-                    // 这里可以加入逻辑判断：如果 fatigue > 80，探索成功率降低
+                // 3. 执行更新 (更新疲劳、加金币、获得物品)
+                conn.prepareStatement("UPDATE user_crew SET fatigue = fatigue + " + cost + " WHERE id = " + crewId).executeUpdate();
+                conn.prepareStatement("UPDATE users SET coins = coins + " + rewardCoin + " WHERE id = " + userId).executeUpdate();
+
+                PreparedStatement psUpdateItem = conn.prepareStatement("UPDATE user_items SET amount = amount + 1 WHERE user_id = ? AND item_id = ?");
+                psUpdateItem.setInt(1, userId);
+                psUpdateItem.setInt(2, rewardItemId);
+                if (psUpdateItem.executeUpdate() == 0) {
+                    PreparedStatement psInsertItem = conn.prepareStatement("INSERT INTO user_items (user_id, item_id, amount) VALUES (?, ?, 1)");
+                    psInsertItem.setInt(1, userId);
+                    psInsertItem.setInt(2, rewardItemId);
+                    psInsertItem.executeUpdate();
                 }
+
+                // 获取物品名称
+                ResultSet rsItem = conn.createStatement().executeQuery("SELECT name FROM supply_base WHERE id = " + rewardItemId);
+                String itemName = rsItem.next() ? rsItem.getString("name") : "未知物资";
+
+                // === 【新增】查询最新金币，用于前端实时更新 ===
+                PreparedStatement psCoins = conn.prepareStatement("SELECT coins FROM users WHERE id = ?");
+                psCoins.setInt(1, userId);
+                ResultSet rsCoins = psCoins.executeQuery();
+                int newCoins = rsCoins.next() ? rsCoins.getInt("coins") : 0;
+
+                conn.commit(); // 提交事务
+
+                // === 【修改】构建统一的 JSON 格式 ===
+                res.addProperty("code", 0);
+                res.addProperty("msg", "探索成功！获得 " + rewardCoin + " 星币 和 " + itemName);
+
+                JsonObject data = new JsonObject();
+                data.addProperty("newCoins", newCoins);
+                res.add("data", data);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            res.addProperty("code", 500);
-            res.addProperty("msg", "系统异常");
+            res.addProperty("code", 500); res.addProperty("msg", "探索发生错误");
         }
         response.getWriter().write(res.toString());
     }

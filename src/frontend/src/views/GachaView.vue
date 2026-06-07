@@ -42,8 +42,10 @@ const handleGacha = async (type) => {
   });
 
   if (res.code === 0) {
+    // res.msg 现在是类似于 "恭喜获得: 500 星币" 或 "恭喜获得: 导航机器人"
     resultMsg.value = res.msg;
-    // 【关键】后端返回最新的金币余额并更新
+
+    // 更新全局金币状态
     if (res.data && res.data.newCoins !== undefined) {
       updateCoins(res.data.newCoins);
     }

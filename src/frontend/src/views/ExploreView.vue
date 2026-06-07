@@ -27,7 +27,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import request from '../api/request';
+import { useUser } from '../status/useUser';
 
+const { user, updateCoins } = useUser();// 获取 user 对象和 setUser 方法
 const crewList = ref([]);
 const selectedCrewId = ref(null);
 const selectedLoc = ref(null);
@@ -42,6 +44,7 @@ const fetchCrews = async () => {
 // 执行探索
 const startExplore = async () => {
   const user = JSON.parse(localStorage.getItem('user'));
+  // 这里增加加载状态处理更好
   const res = await request.post('/explore', null, {
     params: {
       userId: user.id,
@@ -51,10 +54,12 @@ const startExplore = async () => {
   });
 
   if (res.code === 0) {
-    alert('探索成功: ' + res.msg);
-    fetchCrews(); // 刷新状态
+    // 成功展示具体奖励信息
+    alert('探索报告:\n' + res.msg);
+    updateCoins(res.data.newCoins);
+    fetchCrews(); // 重新加载舰员状态
   } else {
-    alert('失败: ' + res.msg);
+    alert('探索失败: ' + res.msg);
   }
 };
 
