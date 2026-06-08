@@ -17,6 +17,11 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- 创建并使用新数据库
+DROP DATABASE IF EXISTS `space_game`;
+CREATE DATABASE `space_game` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `space_game`;
+
 -- ----------------------------
 -- Table structure for crew_base
 -- ----------------------------
@@ -169,16 +174,16 @@ INSERT INTO `shop_items` VALUES (2, '初级冷却液', 20, '恢复微量疲劳',
 INSERT INTO `shop_items` VALUES (3, '机械润滑油', 20, '恢复微量疲劳', '/shop/supply3.png', 1, 10);
 INSERT INTO `shop_items` VALUES (4, '氧气压缩罐', 20, '恢复微量疲劳', '/shop/supply4.png', 1, 10);
 INSERT INTO `shop_items` VALUES (5, '营养合成剂', 20, '恢复微量疲劳', '/shop/supply5.png', 1, 10);
-INSERT INTO `shop_items` VALUES (6, '次级护盾发生器', 0, '不可直接购买', '/shop/supply6.png', 0, 0);
-INSERT INTO `shop_items` VALUES (7, '脉冲校准仪', 0, '不可直接购买', '/shop/supply7.png', 0, 0);
-INSERT INTO `shop_items` VALUES (8, '反物质微粒', 0, '不可直接购买', '/shop/supply8.png', 0, 0);
-INSERT INTO `shop_items` VALUES (9, '高能离子体', 0, '不可直接购买', '/shop/supply9.png', 0, 0);
-INSERT INTO `shop_items` VALUES (10, '量子纠缠节点', 0, '不可直接购买', '/shop/supply10.png', 0, 0);
-INSERT INTO `shop_items` VALUES (11, '暗物质残片', 0, '不可直接购买', '/shop/supply11.png', 0, 0);
-INSERT INTO `shop_items` VALUES (12, '超空间信标', 0, '不可直接购买', '/shop/supply12.png', 0, 0);
-INSERT INTO `shop_items` VALUES (13, '星核碎片', 0, '不可直接购买', '/shop/supply13.png', 0, 0);
-INSERT INTO `shop_items` VALUES (14, '远古文明数据', 0, '不可直接购买', '/shop/supply14.png', 0, 0);
-INSERT INTO `shop_items` VALUES (15, '零点能电池', 0, '不可直接购买', '/shop/supply15.png', 0, 0);
+INSERT INTO `shop_items` VALUES (6, '次级护盾发生器', 0, '不可直接购买', '/shop/supply6.png', 0, 25);
+INSERT INTO `shop_items` VALUES (7, '脉冲校准仪', 0, '不可直接购买', '/shop/supply7.png', 0, 25);
+INSERT INTO `shop_items` VALUES (8, '反物质微粒', 0, '不可直接购买', '/shop/supply8.png', 0, 25);
+INSERT INTO `shop_items` VALUES (9, '高能离子体', 0, '不可直接购买', '/shop/supply9.png', 0, 25);
+INSERT INTO `shop_items` VALUES (10, '量子纠缠节点', 0, '不可直接购买', '/shop/supply10.png', 0, 25);
+INSERT INTO `shop_items` VALUES (11, '暗物质残片', 0, '不可直接购买', '/shop/supply11.png', 0, 40);
+INSERT INTO `shop_items` VALUES (12, '超空间信标', 0, '不可直接购买', '/shop/supply12.png', 0, 40);
+INSERT INTO `shop_items` VALUES (13, '星核碎片', 0, '不可直接购买', '/shop/supply13.png', 0, 40);
+INSERT INTO `shop_items` VALUES (14, '远古文明数据', 0, '不可直接购买', '/shop/supply14.png', 0, 40);
+INSERT INTO `shop_items` VALUES (15, '零点能电池', 0, '不可直接购买', '/shop/supply15.png', 0, 40);
 INSERT INTO `shop_items` VALUES (16, '聚变电池', 300, '通用物资，极大地降低疲劳状态', '/shop/golden_supply.png', 1, 50);
 
 -- ----------------------------
