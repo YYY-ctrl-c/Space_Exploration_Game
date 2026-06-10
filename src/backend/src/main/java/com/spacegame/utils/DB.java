@@ -11,7 +11,7 @@ public class DB {
     // 确保数据库名为 space_game
     private static final String URL = "jdbc:mysql://localhost:3306/space_game?useUnicode=true&characterEncoding=UTF-8&useSSL=false";
     private static final String USER = "root"; // 请替换为您的数据库账号
-    private static final String PASS = "123456"; // 请替换为您的数据库密码
+    private static final String PASS = "root"; // 请替换为您的数据库密码
 
     static {
         try {

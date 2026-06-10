@@ -11,16 +11,11 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 08/06/2026 02:01:31
+ Date: 10/06/2026 20:23:13
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- 创建并使用新数据库
-DROP DATABASE IF EXISTS `space_game`;
-CREATE DATABASE `space_game` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `space_game`;
 
 -- ----------------------------
 -- Table structure for crew_base
@@ -40,21 +35,21 @@ CREATE TABLE `crew_base`  (
 -- ----------------------------
 -- Records of crew_base
 -- ----------------------------
-INSERT INTO `crew_base` VALUES (1, '导航机器人', 1, '基础导航辅助，适合前哨站探索', '/icons/nav_bot.png', 1, 50);
-INSERT INTO `crew_base` VALUES (2, '工程维护员', 1, '负责舰船基础维护与抢修', '/icons/engineer.png', 2, 50);
-INSERT INTO `crew_base` VALUES (3, '医疗助手', 1, '提供基础医疗与心理健康保障', '/icons/medic.png', 3, 50);
-INSERT INTO `crew_base` VALUES (4, '勘探无人机', 1, '用于小行星带的基础物资采集', '/icons/drone.png', 4, 50);
-INSERT INTO `crew_base` VALUES (5, '基础突击兵', 1, '处理低等星际海盗威胁', '/icons/soldier.png', 5, 50);
-INSERT INTO `crew_base` VALUES (6, '深空测绘员', 2, '可绘制复杂星云地形，发现稀有资源', '/icons/mapper.png', 6, 80);
-INSERT INTO `crew_base` VALUES (7, '能源专家', 2, '优化能源供给，降低跃迁损耗', '/icons/energy_expert.png', 7, 80);
-INSERT INTO `crew_base` VALUES (8, '量子研究员', 2, '解析未知星体数据的高阶人才', '/icons/researcher.png', 8, 80);
-INSERT INTO `crew_base` VALUES (9, '突击队长', 2, '经验丰富，可应对中等虫族袭击', '/icons/captain.png', 9, 80);
-INSERT INTO `crew_base` VALUES (10, '护卫舰驾驶员', 2, '精通各类护航战术编队', '/icons/pilot.png', 10, 80);
-INSERT INTO `crew_base` VALUES (11, '战术指挥官', 3, '传奇将领，能化解近乎绝境的星际危机', '/icons/commander.png', 11, 100);
-INSERT INTO `crew_base` VALUES (12, '主控AI', 3, '觉醒的超级量子计算机，算力无上限', '/icons/ai_core.png', 12, 100);
-INSERT INTO `crew_base` VALUES (13, '星际舰长', 3, '拥有丰富的开拓经验与领袖光环', '/icons/star_captain.png', 13, 100);
-INSERT INTO `crew_base` VALUES (14, '远古遗民', 3, '沉睡万年苏醒的神秘种族，自带远古科技', '/icons/ancient.png', 14, 100);
-INSERT INTO `crew_base` VALUES (15, '星际执行官', 3, '银河最高议会特使，权限极高', '/icons/executor.png', 15, 100);
+INSERT INTO `crew_base` VALUES (1, '侦察机器人', 1, '基础导航辅助，适合前哨站探索', '/icons/nav_bot.png', 1, 50);
+INSERT INTO `crew_base` VALUES (2, '维修工程师', 1, '负责舰船基础维护与抢修', '/icons/engineer.png', 2, 50);
+INSERT INTO `crew_base` VALUES (3, '医疗机器人', 1, '提供基础医疗与心理健康保障', '/icons/medic.png', 3, 50);
+INSERT INTO `crew_base` VALUES (4, '采矿无人机', 1, '用于小行星带的基础物资采集', '/icons/drone.png', 4, 50);
+INSERT INTO `crew_base` VALUES (5, '陆战队员', 1, '处理低等星际海盗威胁', '/icons/soldier.png', 5, 50);
+INSERT INTO `crew_base` VALUES (6, '星图导航员', 2, '可绘制复杂星云地形，发现稀有资源', '/icons/mapper.png', 6, 80);
+INSERT INTO `crew_base` VALUES (7, '能源工程师', 2, '优化能源供给，降低跃迁损耗', '/icons/energy_expert.png', 7, 80);
+INSERT INTO `crew_base` VALUES (8, '量子科学家', 2, '解析未知星体数据的高阶人才', '/icons/researcher.png', 8, 80);
+INSERT INTO `crew_base` VALUES (9, '特战指挥官', 2, '经验丰富，可应对中等虫族袭击', '/icons/captain.png', 9, 80);
+INSERT INTO `crew_base` VALUES (10, '王牌飞行员', 2, '精通各类护航战术编队', '/icons/pilot.png', 10, 80);
+INSERT INTO `crew_base` VALUES (11, '舰队统帅', 3, '传奇将领，能化解近乎绝境的星际危机', '/icons/commander.png', 11, 100);
+INSERT INTO `crew_base` VALUES (12, '量子主脑AI', 3, '觉醒的超级量子计算机，算力无上限', '/icons/ai_core.png', 12, 100);
+INSERT INTO `crew_base` VALUES (13, '开拓舰长', 3, '拥有丰富的开拓经验与领袖光环', '/icons/star_captain.png', 13, 100);
+INSERT INTO `crew_base` VALUES (14, '远古先驱者', 3, '沉睡万年苏醒的神秘种族，自带远古科技', '/icons/ancient.png', 14, 100);
+INSERT INTO `crew_base` VALUES (15, '银河执政官', 3, '银河最高议会特使，权限极高', '/icons/executor.png', 15, 100);
 
 -- ----------------------------
 -- Table structure for explore_rewards
@@ -202,21 +197,21 @@ CREATE TABLE `supply_base`  (
 -- ----------------------------
 -- Records of supply_base
 -- ----------------------------
-INSERT INTO `supply_base` VALUES (1, '标准能量包', '基础能量补充，适合低阶机械单位', 0, '/shop/supply1.png');
-INSERT INTO `supply_base` VALUES (2, '初级冷却液', '降低引擎过载风险', 0, '/shop/supply2.png');
-INSERT INTO `supply_base` VALUES (3, '机械润滑油', '基础保养物资', 0, '/shop/supply3.png');
-INSERT INTO `supply_base` VALUES (4, '氧气压缩罐', '适合基础碳基生命舰员', 0, '/shop/supply4.png');
-INSERT INTO `supply_base` VALUES (5, '营养合成剂', '提供基础生命维持', 0, '/shop/supply5.png');
-INSERT INTO `supply_base` VALUES (6, '次级护盾发生器', '提升舰员微型护盾充能', 0, '/shop/supply6.png');
-INSERT INTO `supply_base` VALUES (7, '脉冲校准仪', '校准精英舰员武器系统', 0, '/shop/supply7.png');
-INSERT INTO `supply_base` VALUES (8, '反物质微粒', '高阶能量提取物', 0, '/shop/supply8.png');
-INSERT INTO `supply_base` VALUES (9, '高能离子体', '强效能量注入', 0, '/shop/supply9.png');
-INSERT INTO `supply_base` VALUES (10, '量子纠缠节点', '提升精英科研人员效率', 0, '/shop/supply10.png');
-INSERT INTO `supply_base` VALUES (11, '暗物质残片', '极度稀有，蕴含深空之力', 0, '/shop/supply11.png');
-INSERT INTO `supply_base` VALUES (12, '超空间信标', '引导传奇舰员跳跃', 0, '/shop/supply12.png');
-INSERT INTO `supply_base` VALUES (13, '星核碎片', '恒星衰亡的结晶', 0, '/shop/supply13.png');
-INSERT INTO `supply_base` VALUES (14, '远古文明数据', '包含未知科技的加密盘', 0, '/shop/supply14.png');
-INSERT INTO `supply_base` VALUES (15, '零点能电池', '无穷尽的能源核心', 0, '/shop/supply15.png');
+INSERT INTO `supply_base` VALUES (1, '侦察芯片', '基础能量补充，适合低阶机械单位', 0, '/shop/supply1.png');
+INSERT INTO `supply_base` VALUES (2, '维修工具箱', '降低引擎过载风险', 0, '/shop/supply2.png');
+INSERT INTO `supply_base` VALUES (3, '医疗纳米包', '基础保养物资', 0, '/shop/supply3.png');
+INSERT INTO `supply_base` VALUES (4, '采矿模块', '适合基础碳基生命舰员', 0, '/shop/supply4.png');
+INSERT INTO `supply_base` VALUES (5, '战术补给包', '提供基础生命维持', 0, '/shop/supply5.png');
+INSERT INTO `supply_base` VALUES (6, '星图数据库', '提升舰员微型护盾充能', 0, '/shop/supply6.png');
+INSERT INTO `supply_base` VALUES (7, '聚变稳压器', '校准精英舰员武器系统', 0, '/shop/supply7.png');
+INSERT INTO `supply_base` VALUES (8, '量子运算核心', '高阶能量提取物', 0, '/shop/supply8.png');
+INSERT INTO `supply_base` VALUES (9, '战术指挥终端', '强效能量注入', 0, '/shop/supply9.png');
+INSERT INTO `supply_base` VALUES (10, '飞行控制模块', '提升精英科研人员效率', 0, '/shop/supply10.png');
+INSERT INTO `supply_base` VALUES (11, '统帅勋章', '极度稀有，蕴含深空之力', 0, '/shop/supply11.png');
+INSERT INTO `supply_base` VALUES (12, '主脑核心', '引导传奇舰员跳跃', 0, '/shop/supply12.png');
+INSERT INTO `supply_base` VALUES (13, '开拓者徽记', '恒星衰亡的结晶', 0, '/shop/supply13.png');
+INSERT INTO `supply_base` VALUES (14, '远古遗物', '包含未知科技的加密盘', 0, '/shop/supply14.png');
+INSERT INTO `supply_base` VALUES (15, '银河权杖', '无穷尽的能源核心', 0, '/shop/supply15.png');
 INSERT INTO `supply_base` VALUES (16, '聚变电池', '海量能量恢复，全体舰员通用', 1, '/shop/golden_supply.png');
 
 -- ----------------------------
