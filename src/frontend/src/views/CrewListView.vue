@@ -7,7 +7,7 @@
     <div class="header">
 
       <div class="logo">
-        👨‍🚀
+        👩‍🚀
       </div>
 
       <h1>舰员指挥中心</h1>
@@ -27,9 +27,11 @@
       >
 
         <div class="crew-avatar">
-
-          🚀
-
+          <img
+              :src="crew.icon"
+              :alt="crew.name"
+              onerror="this.src='/icons/default.png'"
+          />
         </div>
 
         <h3>
@@ -495,32 +497,25 @@ onMounted(async()=>{
 
 /* 舰员头像 */
 
-.crew-avatar{
+/* 修改这一整块，确保容器和图片都被限制 */
+.crew-avatar {
+  width: 80px !important;  /* 强制覆盖 */
+  height: 80px !important; /* 强制覆盖 */
+  overflow: hidden;        /* 关键：防止溢出 */
+  margin: auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00d4ff, #0066ff);
+  margin-bottom: 18px;
+}
 
-  width:90px;
-  height:90px;
-
-  margin:auto;
-
-  border-radius:50%;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:42px;
-
-  background:
-      linear-gradient(
-          135deg,
-          #00d4ff,
-          #0066ff
-      );
-
-  box-shadow:
-      0 0 20px rgba(0,212,255,.4);
-
-  margin-bottom:18px;
+/* 必须添加这一段，限制里面的图片 */
+.crew-avatar img {
+  width: 100%;    /* 让图片宽度填满容器 */
+  height: 100%;   /* 让图片高度填满容器 */
+  object-fit: cover; /* 保证图片不变形且填满圆形 */
 }
 
 .crew-card h3{

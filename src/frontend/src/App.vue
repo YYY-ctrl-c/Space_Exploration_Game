@@ -14,7 +14,7 @@
       <div class="user-info">
 
         <span class="commander">
-          👨‍✈️ 指挥官：{{ user.name }}
+          👩‍✈️️ 指挥官：{{ user.name }}
         </span>
 
         <span class="coins">

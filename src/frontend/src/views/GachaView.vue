@@ -244,13 +244,13 @@ const handleGacha = async(type)=>{
 
   text-align:center;
 
-  margin-bottom:45px;
+  margin-bottom:40px;
 }
 
 .logo{
 
-  width:90px;
-  height:90px;
+  width:80px;
+  height:80px;
 
   margin:auto;
 
@@ -279,7 +279,7 @@ const handleGacha = async(type)=>{
 
   color:white;
 
-  font-size:38px;
+  font-size:33px;
 
   letter-spacing:3px;
 
@@ -353,7 +353,7 @@ const handleGacha = async(type)=>{
 
 .gacha-card{
 
-  padding:30px;
+  padding:10px;
 
   border-radius:24px;
 

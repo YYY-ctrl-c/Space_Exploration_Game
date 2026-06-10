@@ -33,7 +33,7 @@
           class="nav-card"
           @click="$router.push('/crew')"
       >
-        <div class="icon">👨‍🚀</div>
+        <div class="icon">👩‍🚀</div>
         <h3>舰员管理</h3>
         <p>查看与管理所有舰员</p>
       </div>

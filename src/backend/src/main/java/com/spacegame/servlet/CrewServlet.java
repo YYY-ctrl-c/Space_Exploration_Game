@@ -27,11 +27,8 @@ public class CrewServlet extends HttpServlet {
         }
 
         try (Connection conn = DB.getConnection()) {
-            // 修正：表名改为 user_crew，别名为 uc
-            String sql = "SELECT uc.id, uc.crew_id, uc.nickname, uc.fatigue, uc.fatigue_max, uc.is_active, cb.name " +
-                    "FROM user_crew uc " +
-                    "LEFT JOIN crew_base cb ON uc.crew_id = cb.id " +
-                    "WHERE uc.user_id = ?";
+            // 1. 修改 SQL，增加 cb.icon
+            String sql = "SELECT uc.*, cb.name, cb.icon FROM user_crew uc LEFT JOIN crew_base cb ON uc.crew_id = cb.id WHERE uc.user_id = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -42,6 +39,8 @@ public class CrewServlet extends HttpServlet {
                 obj.addProperty("id", rs.getInt("id"));
                 obj.addProperty("crewId", rs.getInt("crew_id"));
                 obj.addProperty("name", rs.getString("name"));
+                // 2. 添加 icon 字段
+                obj.addProperty("icon", rs.getString("icon"));
                 obj.addProperty("nickname", rs.getString("nickname"));
                 obj.addProperty("fatigue", rs.getInt("fatigue"));
                 obj.addProperty("fatigueMax", rs.getInt("fatigue_max"));
