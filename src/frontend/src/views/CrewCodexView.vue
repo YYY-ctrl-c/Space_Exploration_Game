@@ -1,155 +1,81 @@
 <template>
-
   <div class="codex-page">
-
-    <!-- 星空背景 -->
     <div class="stars"></div>
-
-    <!-- 页面标题 -->
-
     <div class="header">
-
-      <div class="logo">
-        📖
-      </div>
-
+      <div class="logo">📖</div>
       <h1>舰员图鉴</h1>
-
-      <p>
-        银河舰队档案数据库
-      </p>
-
+      <p>银河舰队档案数据库</p>
     </div>
 
-    <!-- 图鉴列表 -->
-
     <div class="crew-grid">
-
       <div
           v-for="item in crewList"
           :key="item.id"
-          :class="[
-            'crew-card',
-            { locked: !item.isOwned }
-          ]"
+          :class="['crew-card', { locked: !item.isOwned }]"
       >
-
-        <!-- 稀有度顶部发光条 -->
-
-        <div
-            class="rarity-bar"
-            :class="item.rarity?.toLowerCase()"
-        ></div>
-
-        <!-- 头像 -->
+        <div class="rarity-bar" :class="getRarityClass(item.rarity)"></div>
 
         <div class="avatar-box">
-
-          <img
-              :src="item.icon"
-              :alt="item.name"
-          >
-
+          <img :src="item.icon" :alt="item.name" onerror="this.src='/icons/default.png'">
         </div>
 
-        <!-- 名称 -->
+        <h3>{{ item.isOwned ? item.name : '？？？' }}</h3>
 
-        <h3>
+        <p class="desc">{{ item.isOwned ? item.description : '该舰员尚未招募' }}</p>
 
-          {{
-            item.isOwned
-                ? item.name
-                : '？？？'
-          }}
-
-        </h3>
-
-        <!-- 描述 -->
-
-        <p class="desc">
-
-          {{
-            item.isOwned
-                ? item.description
-                : '该舰员尚未招募'
-          }}
-
-        </p>
-
-        <!-- 稀有度 -->
-
-        <div
-            class="rarity"
-            :class="item.rarity?.toLowerCase()"
-        >
-
-          {{ item.rarity }}
-
+        <div class="rarity" :class="getRarityClass(item.rarity)">
+          {{ getRarityText(item.rarity) }}
         </div>
-
       </div>
-
     </div>
-
   </div>
-
 </template>
 
 <script setup>
-
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import request from '../api/request'
 import { useUser } from '../status/useUser'
 
 const { user } = useUser()
-
 const crewList = ref([])
 
-/**
- * 加载图鉴
- */
-const fetchCrewList = async()=>{
-
-  if(!user.value){
-
-    alert('请先登录')
-
-    return
-
-  }
-
-  try{
-
-    const res = await request.get(
-        '/crew-codex',
-        {
-          params:{
-            userId:user.value.id
-          }
-        }
-    )
-
-    crewList.value = res || []
-
-  }catch(err){
-
-    console.error(err)
-
-    alert('图鉴加载失败')
-
-  }
-
+// 获取稀有度对应样式类名 (修复: 替代 toLowerCase)
+const getRarityClass = (rarity) => {
+  const map = { 1: 'common', 2: 'rare', 3: 'epic' };
+  return map[rarity] || 'common';
 }
 
-onMounted(()=>{
+// 获取稀有度显示文字
+const getRarityText = (rarity) => {
+  const map = { 1: '普通', 2: '精英', 3: '传奇' };
+  return map[rarity] || '未知';
+}
 
-  fetchCrewList()
+const fetchCrewList = async () => {
+  if (!user.value) return;
+  try {
+    const res = await request.get('/crew-codex', {
+      params: { userId: user.value.id }
+    });
+    crewList.value = res || [];
+  } catch (err) {
+    console.error(err);
+    alert('图鉴加载失败');
+  }
+}
 
-})
-
+onMounted(fetchCrewList);
 </script>
 
 <style scoped>
+
+.rarity-bar.common { background: #bdbdbd; }
+.rarity-bar.rare { background: #42a5f5; }
+.rarity-bar.epic { background: #ab47bc; }
+
+.rarity.common { color: #bdbdbd; }
+.rarity.rare { color: #42a5f5; }
+.rarity.epic { color: #ab47bc; }
 
 .codex-page{
 
