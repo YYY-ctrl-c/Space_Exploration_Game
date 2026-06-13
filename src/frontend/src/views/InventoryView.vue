@@ -247,68 +247,52 @@ onMounted(()=>{
 
 /* 物品列表 */
 
-.inventory-grid{
-
-  position:relative;
-
-  z-index:10;
-
-  display:grid;
-
-  grid-template-columns:
-      repeat(auto-fill,minmax(260px,1fr));
-
-  gap:25px;
+.inventory-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  /* 将基础宽度从 260px 缩小到 180px 或 200px，让一行能放下更多卡片 */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px; /* 稍微缩小间距 */
 }
 
-.item-card{
-
-  padding:25px;
-
-  border-radius:22px;
-
-  text-align:center;
-
-  background:
-      rgba(10,18,35,.75);
-
-  backdrop-filter:blur(15px);
-
-  border:
-      1px solid rgba(0,212,255,.15);
-
-  transition:.35s;
+.item-card {
+  padding: 20px 15px; /* 减小上下左右的内边距 */
+  border-radius: 16px; /* 圆角稍微收敛一点 */
+  text-align: center;
+  background: rgba(10, 18, 35, 0.75);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  transition: 0.35s;
 }
 
-.item-card:hover{
-
-  transform:
-      translateY(-8px);
-
-  box-shadow:
-      0 0 25px rgba(0,212,255,.25);
+.item-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.25);
 }
 
-.item-icon{
-
-  font-size:52px;
-
-  margin-bottom:15px;
+.item-icon {
+  /* 【关键】给图标容器一个固定的宽高，防止图片把卡片撑爆 */
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px auto; /* 保证居中 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 42px; /* 缩小没有图片时的 emoji 大小 */
 }
 
-/* 控制里面真实图片的大小 */
 .item-icon img {
-  width: 75%; /* 不设为100%是为了让圆框留出一点发光的内边距，更有科技感 */
-  height: 75%;
-  object-fit: contain; /* 保证物资图片完整显示不被拉伸 */
+  width: 90%; /* 基于固定的 80px 容器进行缩放，留出一点呼吸感 */
+  height: 90%;
+  object-fit: contain;
   display: block;
 }
 
-.item-card h3{
-
-  color:white;
-
-  margin-bottom:12px;
+.item-card h3 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 16px; /* 稍微调小标题字号 */
 }
 
 .desc{

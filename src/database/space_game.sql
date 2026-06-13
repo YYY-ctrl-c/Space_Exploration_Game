@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 13/06/2026 21:57:47
+ Date: 13/06/2026 22:09:10
 */
 
 SET NAMES utf8mb4;
@@ -232,12 +232,29 @@ CREATE TABLE `user_crew`  (
   INDEX `crew_id`(`crew_id`) USING BTREE,
   CONSTRAINT `user_crew_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_crew_ibfk_2` FOREIGN KEY (`crew_id`) REFERENCES `crew_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '服役舰员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '服役舰员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_crew
 -- ----------------------------
 INSERT INTO `user_crew` VALUES (1, 1, 1, '导航机器人', '2026-06-08 02:00:08', 0, 50, 1);
+INSERT INTO `user_crew` VALUES (2, 1, 11, '舰队统帅', '2026-06-08 02:10:00', 12, 100, 1);
+INSERT INTO `user_crew` VALUES (3, 1, 12, '量子主脑AI', '2026-06-08 02:15:00', 0, 100, 0);
+INSERT INTO `user_crew` VALUES (4, 2, 2, '维修工程师', '2026-06-10 14:30:00', 45, 50, 0);
+INSERT INTO `user_crew` VALUES (5, 2, 4, '采矿无人机', '2026-06-10 14:35:00', 10, 50, 1);
+INSERT INTO `user_crew` VALUES (6, 2, 6, '星图导航员', '2026-06-11 11:20:00', 32, 80, 1);
+INSERT INTO `user_crew` VALUES (7, 2, 7, '能源工程师', '2026-06-12 15:40:00', 15, 80, 0);
+INSERT INTO `user_crew` VALUES (8, 3, 11, '舰队统帅', '2026-06-11 09:05:00', 0, 100, 1);
+INSERT INTO `user_crew` VALUES (9, 3, 13, '开拓舰长', '2026-06-11 09:05:00', 5, 100, 1);
+INSERT INTO `user_crew` VALUES (10, 3, 14, '远古先驱者', '2026-06-11 09:10:00', 0, 100, 1);
+INSERT INTO `user_crew` VALUES (11, 3, 15, '银河执政官', '2026-06-12 20:18:00', 25, 100, 0);
+INSERT INTO `user_crew` VALUES (12, 3, 8, '量子科学家', '2026-06-11 09:30:00', 40, 80, 0);
+INSERT INTO `user_crew` VALUES (13, 3, 9, '特战指挥官', '2026-06-11 09:35:00', 8, 80, 1);
+INSERT INTO `user_crew` VALUES (14, 4, 1, '侦察机器人', '2026-06-13 10:15:30', 50, 50, 0);
+INSERT INTO `user_crew` VALUES (15, 4, 3, '医疗机器人', '2026-06-13 10:20:00', 48, 50, 1);
+INSERT INTO `user_crew` VALUES (16, 5, 5, '陆战队员', '2026-06-10 01:00:00', 20, 50, 1);
+INSERT INTO `user_crew` VALUES (17, 5, 10, '王牌飞行员', '2026-06-10 01:05:00', 55, 80, 1);
+INSERT INTO `user_crew` VALUES (18, 5, 2, '维修工程师', '2026-06-10 02:00:00', 12, 50, 0);
 
 -- ----------------------------
 -- Table structure for user_items
@@ -252,12 +269,24 @@ CREATE TABLE `user_items`  (
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `item_id`(`item_id`) USING BTREE,
   CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '舰队货舱表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '舰队货舱表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_items
 -- ----------------------------
 INSERT INTO `user_items` VALUES (1, 1, 16, 10);
+INSERT INTO `user_items` VALUES (2, 2, 1, 8);
+INSERT INTO `user_items` VALUES (3, 2, 2, 4);
+INSERT INTO `user_items` VALUES (4, 2, 16, 2);
+INSERT INTO `user_items` VALUES (5, 3, 16, 99);
+INSERT INTO `user_items` VALUES (6, 3, 11, 15);
+INSERT INTO `user_items` VALUES (7, 3, 12, 8);
+INSERT INTO `user_items` VALUES (8, 3, 15, 5);
+INSERT INTO `user_items` VALUES (9, 3, 8, 20);
+INSERT INTO `user_items` VALUES (10, 4, 3, 1);
+INSERT INTO `user_items` VALUES (11, 5, 5, 25);
+INSERT INTO `user_items` VALUES (12, 5, 2, 12);
+INSERT INTO `user_items` VALUES (13, 5, 16, 6);
 
 -- ----------------------------
 -- Table structure for users
@@ -274,11 +303,15 @@ CREATE TABLE `users`  (
   `update_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `account`(`account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '指挥官档案表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '指挥官档案表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
 INSERT INTO `users` VALUES (1, 'admin', '星际总指挥', 'admin', '/avatars/txone.jpg', 100000, '2026-06-08 02:00:08', '2026-06-08 02:00:08');
+INSERT INTO `users` VALUES (2, 'star_lord', '流浪星爵', '123456', '/avatars/txb.jpg', 4850, '2026-06-10 14:20:00', '2026-06-13 18:30:22');
+INSERT INTO `users` VALUES (3, 'galaxy_whale', '氪金执政官', '666666', '/avatars/txwhale.jpg', 680000, '2026-06-11 09:00:15', '2026-06-13 21:00:00');
+INSERT INTO `users` VALUES (4, 'rookie_space', '星际萌新小刘', 'abc123', '/avatars/txfresh.jpg', 320, '2026-06-13 10:15:30', '2026-06-13 10:15:30');
+INSERT INTO `users` VALUES (5, 'bounty_hunter', '独行猎人·零', 'hunter0', '/avatars/txhunter.jpg', 24500, '2026-06-09 23:45:10', '2026-06-13 19:12:45');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -13,7 +13,7 @@ import java.sql.*;
 @WebServlet("/crew/*")
 public class CrewServlet extends HttpServlet {
 
-    // 获取用户的所有舰员（修正表名 user_crew）
+    // 获取用户的所有舰员
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws javax.servlet.ServletException, java.io.IOException {
@@ -27,7 +27,6 @@ public class CrewServlet extends HttpServlet {
         }
 
         try (Connection conn = DB.getConnection()) {
-            // 1. 修改 SQL，增加 cb.icon
             String sql = "SELECT uc.*, cb.name, cb.icon FROM user_crew uc LEFT JOIN crew_base cb ON uc.crew_id = cb.id WHERE uc.user_id = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -39,7 +38,6 @@ public class CrewServlet extends HttpServlet {
                 obj.addProperty("id", rs.getInt("id"));
                 obj.addProperty("crewId", rs.getInt("crew_id"));
                 obj.addProperty("name", rs.getString("name"));
-                // 2. 添加 icon 字段
                 obj.addProperty("icon", rs.getString("icon"));
                 obj.addProperty("nickname", rs.getString("nickname"));
                 obj.addProperty("fatigue", rs.getInt("fatigue"));
@@ -54,13 +52,48 @@ public class CrewServlet extends HttpServlet {
         }
     }
 
-    // 使用道具恢复疲劳（增加疲劳为0的拦截）
+    // 处理POST请求：包含【驱逐舰员】和【使用道具恢复疲劳】
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws javax.servlet.ServletException, java.io.IOException {
         response.setContentType("application/json;charset=UTF-8");
-        JsonObject res = new JsonObject();
 
+        // 🌟【关键新增】获取具体路径，判断是否是驱逐操作
+        String pathInfo = request.getPathInfo();
+
+        if ("/dismiss".equals(pathInfo)) {
+            // === 执行驱逐逻辑 ===
+            JsonObject res = new JsonObject();
+            try {
+                int userId = Integer.parseInt(request.getParameter("userId"));
+                int crewId = Integer.parseInt(request.getParameter("crewId"));
+
+                try (Connection conn = DB.getConnection()) {
+                    String sql = "DELETE FROM user_crew WHERE id = ? AND user_id = ?";
+                    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                        ps.setInt(1, crewId);
+                        ps.setInt(2, userId);
+                        int rowsAffected = ps.executeUpdate();
+                        if (rowsAffected > 0) {
+                            res.addProperty("code", 0);
+                            res.addProperty("msg", "驱逐成功");
+                        } else {
+                            res.addProperty("code", 1);
+                            res.addProperty("msg", "舰员不存在或越权操作");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                res.addProperty("code", 500);
+                res.addProperty("msg", "服务器数据库异常");
+            }
+            response.getWriter().write(res.toString());
+            return; // 结束逻辑，不往下走恢复疲劳的代码
+        }
+
+        // === 以下是原本的【恢复疲劳】逻辑（保持不变） ===
+        JsonObject res = new JsonObject();
         int crewId;
         int itemId;
         try {
@@ -93,9 +126,7 @@ public class CrewServlet extends HttpServlet {
             int userId = rsCrew.getInt("user_id");
             int baseCrewId = rsCrew.getInt("crew_id");
             int currentFatigue = rsCrew.getInt("fatigue");
-            int fatigueMax = rsCrew.getInt("fatigue_max");
 
-            // 【修复1】疲劳已满（为0）时不允许使用恢复道具
             if (currentFatigue == 0) {
                 res.addProperty("code", 1);
                 res.addProperty("msg", "舰员当前无疲劳，无需恢复");
@@ -123,7 +154,7 @@ public class CrewServlet extends HttpServlet {
                 return;
             }
 
-            // 3. 匹配规则：专属物资（1-15且等于crew_id）或通用物资（16）
+            // 3. 匹配规则
             boolean valid = (itemId == 16) || (itemId >= 1 && itemId <= 15 && itemId == baseCrewId);
             if (!valid) {
                 res.addProperty("code", 1);
@@ -132,7 +163,7 @@ public class CrewServlet extends HttpServlet {
                 return;
             }
 
-            // 4. 扣减库存（原子操作）
+            // 4. 扣减库存
             PreparedStatement psDeduct = conn.prepareStatement(
                     "UPDATE user_items SET amount = amount - 1 WHERE user_id = ? AND item_id = ? AND amount > 0"
             );
@@ -145,7 +176,6 @@ public class CrewServlet extends HttpServlet {
                 response.getWriter().write(res.toString());
                 return;
             }
-            // 清理数量为0的记录（可选）
             PreparedStatement psClean = conn.prepareStatement(
                     "DELETE FROM user_items WHERE user_id = ? AND item_id = ? AND amount = 0"
             );
@@ -153,7 +183,7 @@ public class CrewServlet extends HttpServlet {
             psClean.setInt(2, itemId);
             psClean.executeUpdate();
 
-            // 5. 更新疲劳值（不低于0）
+            // 5. 更新疲劳值
             int newFatigue = Math.max(0, currentFatigue - supplyPower);
             PreparedStatement psFatigue = conn.prepareStatement(
                     "UPDATE user_crew SET fatigue = ? WHERE id = ?"
