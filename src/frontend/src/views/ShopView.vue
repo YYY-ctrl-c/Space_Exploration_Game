@@ -49,34 +49,30 @@
         <div
             class="rarity-bar"
             :class="{
-              common:item.price < 500,
-              rare:item.price >= 500 && item.price < 2000,
-              epic:item.price >= 2000 && item.price < 5000,
-              legendary:item.price >= 5000
+              common: item.price < 500,
+              rare: item.price >= 500 && item.price < 2000,
+              epic: item.price >= 2000 && item.price < 5000,
+              legendary: item.price >= 5000
             }"
         ></div>
 
         <!-- 图标 -->
-
         <div class="item-icon">
           <img :src="item.icon" :alt="item.name" v-if="item.icon" />
           <span v-else>🛸</span>
         </div>
 
         <!-- 名称 -->
-
         <h3>
           {{ item.name }}
         </h3>
 
         <!-- 描述 -->
-
         <p class="desc">
           {{ item.description }}
         </p>
 
         <!-- 稀有度 -->
-
         <div class="rarity-text">
 
           <span v-if="item.price < 500">
@@ -98,16 +94,14 @@
         </div>
 
         <!-- 价格 -->
-
         <div class="price">
           💰 {{ item.price }}
         </div>
 
         <!-- 购买 -->
-
         <button
             class="buy-btn"
-            @click="buyItem(item.id)"
+            @click="buyItem(item.id, item.name)"
         >
           购买补给
         </button>
@@ -116,13 +110,22 @@
 
     </div>
 
+    <!-- 统一科幻风格弹窗 -->
+    <div v-if="modalVisible" class="modal-overlay" @click="closeModal">
+      <div class="result-panel" @click.stop>
+        <h3>{{ modalTitle }}</h3>
+        <div class="result-text">{{ modalMessage }}</div>
+        <button class="confirm-btn" @click="closeModal">确 定</button>
+      </div>
+    </div>
+
   </div>
 
 </template>
 
 <script setup>
 
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import request from '../api/request'
 import { useUser } from '../status/useUser'
 
@@ -130,95 +133,95 @@ const { user, updateCoins } = useUser()
 
 const items = ref([])
 
+// 弹窗控制变量
+const modalVisible = ref(false)
+const modalTitle = ref('')
+const modalMessage = ref('')
+
+/**
+ * 显示弹窗的统一方法
+ * @param {string} title 弹窗标题
+ * @param {string} message 弹窗内容
+ */
+const showModal = (title, message) => {
+  modalTitle.value = title
+  modalMessage.value = message
+  modalVisible.value = true
+}
+
+/**
+ * 关闭弹窗
+ */
+const closeModal = () => {
+  modalVisible.value = false
+}
+
 /**
  * 加载商品
  */
-const fetchItems = async ()=>{
-
-  try{
-
+const fetchItems = async () => {
+  try {
     const res = await request.get('/shop')
-
     items.value = res.filter(item => {
-
       return item &&
           item.id &&
           item.name &&
           item.description &&
           item.price &&
           item.price > 0
-
     })
-
-  }catch(err){
-
+  } catch (err) {
     console.error(err)
-
-    alert('商品加载失败')
-
+    showModal('📡 通信故障', '商品数据加载失败，请检查网络链路')
   }
-
 }
 
 /**
  * 购买商品
+ * @param {number} itemId 商品ID
+ * @param {string} itemName 商品名称（用于弹窗友好提示）
  */
-const buyItem = async(itemId)=>{
-
-  if(!user.value){
-
-    alert('请先登录')
-
+const buyItem = async (itemId, itemName) => {
+  if (!user.value) {
+    showModal('⚠️ 未授权访问', '请先登录后再进行购买')
     return
   }
 
-  try{
-
+  try {
     const res = await request.post(
         '/shop',
         null,
         {
-          params:{
-            userId:user.value.id,
-            itemId:itemId
+          params: {
+            userId: user.value.id,
+            itemId: itemId
           }
         }
     )
 
-    if(res.code === 0){
+    if (res.code === 0) {
+      // 购买成功，展示统一风格弹窗
+      showModal('✅ 交易成功', `成功获得 ${itemName} ×1`)
 
-      alert('补给购买成功')
-
-      if(res.data){
-
-        updateCoins(
-            res.data.newCoins
-        )
-
+      // 更新前端金币显示
+      if (res.data) {
+        updateCoins(res.data.newCoins)
       }
 
+      // 刷新商品列表（物品数量不会变化，但保持逻辑完整性）
       await fetchItems()
-
-    }else{
-
-      alert(res.msg)
-
+    } else {
+      // 购买失败（如星币不足），展示错误弹窗
+      showModal('❌ 交易失败', res.msg || '购买未成功，请稍后重试')
     }
-
-  }catch(err){
-
+  } catch (err) {
     console.error(err)
-
-    alert('服务器连接失败')
-
+    showModal('📡 链接断开', '服务器连接失败，请稍后重试')
   }
-
 }
 
-onMounted(()=>{
-
+onMounted(() => {
   fetchItems()
-
 })
 
 </script>
@@ -606,7 +609,6 @@ onMounted(()=>{
   height: 75%;
   object-fit: contain;
   display: block;
-  /* 如果你的物品图片是透明背景PNG，加一点滤镜效果会更炫酷（可选） */
   filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5));
 }
 
@@ -697,6 +699,83 @@ onMounted(()=>{
 .buy-btn:active{
 
   transform:scale(.98);
+}
+
+/* ======================== 统一科幻风弹窗组件样式 ======================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 5, 11, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.result-panel {
+  width: 90%;
+  max-width: 420px;
+  padding: 35px 25px;
+  text-align: center;
+  border-radius: 20px;
+  background: rgba(16, 28, 48, 0.95);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 35px rgba(0, 212, 255, 0.35);
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.result-panel h3 {
+  color: #ffd54f;
+  margin-bottom: 20px;
+  font-size: 26px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 213, 79, 0.4);
+}
+
+.result-text {
+  color: #e2f1ff;
+  font-size: 16px;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: pre-line;
+}
+
+.confirm-btn {
+  width: 140px;
+  padding: 12px;
+  border: none;
+  background: linear-gradient(135deg, #00d4ff, #0066ff);
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+}
+
+.confirm-btn:hover {
+  transform: scale(1.03);
+  filter: brightness(1.1);
+}
+
+/* 手机适配 */
+@media (max-width: 768px) {
+  .shop-page { padding: 20px; }
+  .item-grid { gap: 18px; }
+  .item-card { padding: 18px; }
+  .shop-header h1 { font-size: 28px; }
+  .coin-panel { width: 260px; }
 }
 
 </style>
