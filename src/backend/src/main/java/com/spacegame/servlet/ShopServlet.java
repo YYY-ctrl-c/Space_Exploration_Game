@@ -12,7 +12,7 @@ import java.sql.*;
 @WebServlet("/shop")
 public class ShopServlet extends HttpServlet {
 
-    // 获取商店商品列表（保持不变）
+    // 获取商店商品列表
     @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
@@ -22,7 +22,8 @@ public class ShopServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try (Connection conn = DB.getConnection()) {
-            String sql = "SELECT id,name,price,description,supply_power " +
+            // 注意：加入了 icon 字段
+            String sql = "SELECT id,name,price,description,supply_power,icon " +
                     "FROM shop_items WHERE price > 0";
             ResultSet rs = conn.createStatement().executeQuery(sql);
             com.google.gson.JsonArray items = new com.google.gson.JsonArray();
@@ -33,6 +34,7 @@ public class ShopServlet extends HttpServlet {
                 item.addProperty("price", rs.getInt("price"));
                 item.addProperty("description", rs.getString("description"));
                 item.addProperty("supplyPower", rs.getInt("supply_power"));
+                item.addProperty("icon", rs.getString("icon")); // 获取图片路径
                 items.add(item);
             }
             response.getWriter().write(items.toString());

@@ -30,23 +30,8 @@
       >
 
         <div class="item-icon">
-
-          <span v-if="item.amount >= 20">
-            🚀
-          </span>
-
-          <span
-              v-else-if="item.amount >= 10"
-          >
-            ⚙️
-          </span>
-
-          <span
-              v-else
-          >
-            🔋
-          </span>
-
+          <img :src="item.icon" :alt="item.name" v-if="item.icon" />
+          <span v-else>📦</span>
         </div>
 
         <h3>
@@ -309,6 +294,14 @@ onMounted(()=>{
   font-size:52px;
 
   margin-bottom:15px;
+}
+
+/* 控制里面真实图片的大小 */
+.item-icon img {
+  width: 75%; /* 不设为100%是为了让圆框留出一点发光的内边距，更有科技感 */
+  height: 75%;
+  object-fit: contain; /* 保证物资图片完整显示不被拉伸 */
+  display: block;
 }
 
 .item-card h3{

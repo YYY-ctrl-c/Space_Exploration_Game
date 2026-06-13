@@ -16,12 +16,12 @@ public class ItemServlet extends HttpServlet {
         int userId = Integer.parseInt(request.getParameter("userId"));
 
         try (Connection conn = DB.getConnection()) {
-            // 按物品ID分组，合并数量
-            String sql = "SELECT ui.item_id, SUM(ui.amount) AS total_amount, sb.name, sb.description " +
+            // 注意：SELECT 和 GROUP BY 中都加入了 sb.icon
+            String sql = "SELECT ui.item_id, SUM(ui.amount) AS total_amount, sb.name, sb.description, sb.icon " +
                     "FROM user_items ui " +
                     "JOIN supply_base sb ON ui.item_id = sb.id " +
                     "WHERE ui.user_id = ? " +
-                    "GROUP BY ui.item_id, sb.name, sb.description";
+                    "GROUP BY ui.item_id, sb.name, sb.description, sb.icon";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -33,6 +33,7 @@ public class ItemServlet extends HttpServlet {
                 item.addProperty("name", rs.getString("name"));
                 item.addProperty("amount", rs.getInt("total_amount"));
                 item.addProperty("desc", rs.getString("description"));
+                item.addProperty("icon", rs.getString("icon")); // 获取图片路径
                 items.add(item);
             }
             response.getWriter().write(items.toString());

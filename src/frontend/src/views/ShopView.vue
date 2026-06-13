@@ -59,23 +59,8 @@
         <!-- 图标 -->
 
         <div class="item-icon">
-
-          <span v-if="item.price < 500">
-            🔋
-          </span>
-
-          <span v-else-if="item.price < 2000">
-            ⚙️
-          </span>
-
-          <span v-else-if="item.price < 5000">
-            🚀
-          </span>
-
-          <span v-else>
-            🛸
-          </span>
-
+          <img :src="item.icon" :alt="item.name" v-if="item.icon" />
+          <span v-else>🛸</span>
         </div>
 
         <!-- 名称 -->
@@ -613,6 +598,16 @@ onMounted(()=>{
       0 0 20px rgba(0,212,255,.2);
 
   margin-bottom:18px;
+}
+
+/* 控制里面真实图片的大小 */
+.item-icon img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  display: block;
+  /* 如果你的物品图片是透明背景PNG，加一点滤镜效果会更炫酷（可选） */
+  filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5));
 }
 
 .item-card h3{
